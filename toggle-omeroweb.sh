@@ -17,7 +17,8 @@ NEW_OMERO=$2
 
 if [ -d "$CURRENT_OMERO" ]; then
     pushd $CURRENT_OMERO
-    CURRENT_PID=$( bin/omero web status | awk '{ print $5 }' |sed -e 's/)//' )
+    CURRENT_PID=$(< ${CURRENT_OMERO}/var/django.pid )
+    ##CURRENT_PID=$( bin/omero web status | awk '{ print $5 }' |sed -e 's/)//' )
     popd
 fi
 
@@ -42,7 +43,9 @@ pushd $NEW_OMERO
 # set port to start omero.web on
 bin/omero config set omero.web.application_server.port $START_PORT
 # start new omero.web
-bin/omero web start
+# there is a some latency between when django starts and can serve requests so we wait a bit to make sure it's up before stopping the old one
+bin/omero web start && sleep 2s
+# change upstream config
 popd
 
 # send a HUP to the top django process to force a graceful shutdown of the workers
