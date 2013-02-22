@@ -10,7 +10,7 @@ sleep 2s
 
 set -x
 if [ "$current" = "$1" ]; then
-    echo ./toggle-omeroweb.sh current $2
+    ./toggle-omeroweb.sh current $2
 else
-    echo ./toggle-omeroweb.sh current $1
+    ./toggle-omeroweb.sh current $1
 fi

@@ -5,6 +5,14 @@ if [ "$(basename $PWD)" != "deploy" ]; then
     exit 1
 fi
 
+LOCKFILE=deploy.lock
+
+[ -f $LOCKFILE ] && exit 0
+
+# Upon exit, remove lockfile.
+trap "{ rm -f $LOCKFILE ; exit 0; }" EXIT SIGTERM SIGHUP
+touch $LOCKFILE
+
 set -x
 
 CURRENT_OMERO=$1
@@ -17,7 +25,7 @@ NEW_OMERO=$2
 
 if [ -d "$CURRENT_OMERO" ]; then
     pushd $CURRENT_OMERO
-    CURRENT_PID=$(< ${CURRENT_OMERO}/var/django.pid )
+    CURRENT_PID=$(< var/django.pid )
     ##CURRENT_PID=$( bin/omero web status | awk '{ print $5 }' |sed -e 's/)//' )
     popd
 fi
