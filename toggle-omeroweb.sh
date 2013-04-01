@@ -36,9 +36,13 @@ START_PORT=''
 
 for port in $AVAILABLE_PORTS; do
     nc -z -n 127.0.0.1 $port &> /dev/null
-    if [ "$?" -eq 0 ]; then
+    RET=$?
+    if [ "$RET" -eq 0 ]; then
         # port in use
         true
+    elif [ "$RET" -eq 127 ]; then
+        echo "Problem checking port -- ensure netcat is installed -- aborting!"
+        exit 2
     else
         # port free
         START_PORT=$port
