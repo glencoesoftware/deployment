@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [ "$(basename $PWD)" != "deploy" ]; then
-    echo "Must be in deploy directory"
-    exit 1
-fi
-
 LOCKFILE=deploy.lock
 
 [ -f $LOCKFILE ] && exit 0
@@ -31,7 +26,7 @@ if [ -d "$CURRENT_OMERO" ]; then
 fi
 
 # these must match whatever is configured in nginx
-AVAILABLE_PORTS="9090 9091"
+: ${AVAILABLE_PORTS:="9090 9091"}
 START_PORT=''
 
 for port in $AVAILABLE_PORTS; do
